@@ -1,0 +1,25 @@
+{
+  "name": "kodemia-js22-api",
+  "version": "1.0.0",
+  "description": "Esta es mi primera aplicación de Backend con Node",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ahuahuachi/kodemia-js22-api.git"
+  },
+  "keywords": [
+    "api",
+    "node",
+    "javascript",
+    "rest"
+  ],
+  "author": "@Ahuahuachi",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Ahuahuachi/kodemia-js22-api/issues"
+  },
+  "homepage": "https://github.com/Ahuahuachi/kodemia-js22-api#readme"
+}
