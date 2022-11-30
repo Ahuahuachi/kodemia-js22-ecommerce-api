@@ -7,11 +7,11 @@ const users = [
   { id: 3, username: "customer", firstName: "John", lastName: "Doe" },
 ];
 
-routes.get("/users", (req, res) => {
+routes.get("/", (req, res) => {
   res.json(users);
 });
 
-routes.get("/users/:userid", (req, res) => {
+routes.get("/:userid", (req, res) => {
   const data = users.find((user) => {
     return user.id == req.params.userid;
   });

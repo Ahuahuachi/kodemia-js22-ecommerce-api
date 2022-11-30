@@ -1,8 +1,10 @@
+// /index
+
 const express = require("express");
 const app = express();
-const usersRouter = require("./src/routes/usersRouter");
+const apiRouter = require("./src/routes");
 
-app.use(usersRouter);
+apiRouter(app);
 
 app.get("/", (req, res) => {
   res.json({ message: "El API ya no funciona" });
