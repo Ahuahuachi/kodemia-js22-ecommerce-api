@@ -8,6 +8,8 @@ const users = [
 ];
 
 routes.get("/", (req, res) => {
+  throw new Error("Some random error ocurred");
+
   res.json(users);
 });
 
