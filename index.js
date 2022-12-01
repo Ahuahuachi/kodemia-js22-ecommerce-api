@@ -1,9 +1,8 @@
-// /index
-
 const express = require("express");
 const app = express();
 const apiRouter = require("./src/routes");
 const { logErrors, errorHandler } = require("./src/middlewares/errorHandler");
+const config = require("./src/lib/config");
 
 app.use(express.json());
 apiRouter(app);
@@ -16,6 +15,6 @@ app.get("/", (req, res) => {
 });
 
 // Ejecutando el servidor HTTP
-app.listen(8000, () =>
-  console.log("Esuchando peticiones HTTP en el puerto 8000")
+app.listen(config.app.port, () =>
+  console.log(`Esuchando peticiones HTTP en el puerto ${config.app.port}`)
 );
