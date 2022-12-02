@@ -1,5 +1,3 @@
-// src/routes/index
-
 const usersRouter = require("./usersRouter");
 const productsRouter = require("./productsRouter");
 const categoriesRouter = require("./categoriesRouter");

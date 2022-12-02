@@ -4,7 +4,7 @@ const apiRouter = require("./src/routes");
 const { logErrors, errorHandler } = require("./src/middlewares/errorHandler");
 const config = require("./src/lib/config");
 
-app.use(express.json());
+// app.use(express.json());
 apiRouter(app);
 
 app.use(logErrors);

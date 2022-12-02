@@ -1,3 +1,4 @@
+const fs = require("fs/promises");
 const { Router, json } = require("express");
 const router = Router();
 
@@ -8,8 +9,11 @@ const categories = [
   { id: 4, name: "Mascotas" },
 ];
 
-router.get("/", (req, res) => {
-  res.json(categories);
+router.get("/", async (req, res) => {
+  const categories = await fs.readFile("./categories.json");
+  const data = JSON.parse(categories.toString());
+  console.log(data);
+  res.json(data);
 });
 
 router.get("/:id", (req, res) => {
@@ -22,10 +26,27 @@ router.get("/:id", (req, res) => {
   }
 });
 
-router.post("/", (req, res) => {
+router.post("/", async (req, res) => {
   console.log("Request body:", req.body);
 
-  res.json({ message: "Category created successfully" });
+  const id = Math.ceil(Math.random() * 100);
+  const { name } = req.body;
+
+  const fileContent = await (await fs.readFile("./categories.json")).toString();
+
+  const categories = JSON.parse(fileContent);
+
+  categories.push({ id, name });
+
+  const appendRes = await fs.writeFile(
+    "./categories.json",
+    JSON.stringify(categories)
+  );
+
+  res.json({
+    message: "Category created successfully",
+    payload: appendRes,
+  });
 });
 
 router.put("/:id", (req, res) => {
@@ -38,14 +59,18 @@ router.put("/:id", (req, res) => {
   }
 });
 
-router.delete("/:id", (req, res) => {
-  const category = categories.find((element) => element.id == req.params.id);
+router.delete("/:id", async (req, res) => {
+  const { id } = req.params;
+  const fileContent = await fs.readFile("./categories.json");
+  const categories = JSON.parse(fileContent.toString());
 
-  if (!category) {
-    res.status(404).json({ message: "Category not found" });
-  } else {
-    res.json({ message: `Category "${category.name}" deleted successfully` });
-  }
+  // const category = categories.find((element) => element.id == id);
+
+  const newCategories = categories.filter((element) => element.id != id);
+
+  fs.writeFile("./categories.json", JSON.stringify(newCategories));
+
+  res.json({ message: `Category "${id}" deleted successfully` });
 });
 
 module.exports = router;
