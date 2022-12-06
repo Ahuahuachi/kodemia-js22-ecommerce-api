@@ -1,6 +1,6 @@
 const fs = require("fs/promises");
-const { Router, json } = require("express");
-const router = Router();
+const router = require("express").Router();
+const categoryUseCases = require("../usecases/category");
 
 const categories = [
   { id: 1, name: "Hombre" },
@@ -12,7 +12,6 @@ const categories = [
 router.get("/", async (req, res) => {
   const categories = await fs.readFile("./categories.json");
   const data = JSON.parse(categories.toString());
-  console.log(data);
   res.json(data);
 });
 
@@ -27,36 +26,40 @@ router.get("/:id", (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  console.log("Request body:", req.body);
-
-  const id = Math.ceil(Math.random() * 100);
   const { name } = req.body;
 
-  const fileContent = await (await fs.readFile("./categories.json")).toString();
-
-  const categories = JSON.parse(fileContent);
-
-  categories.push({ id, name });
-
-  const appendRes = await fs.writeFile(
-    "./categories.json",
-    JSON.stringify(categories)
-  );
-
-  res.json({
-    message: "Category created successfully",
-    payload: appendRes,
-  });
+  try {
+    const payload = await categoryUseCases.create(name);
+    res.json({
+      ok: true,
+      message: "Category created successfully",
+      payload,
+    });
+  } catch (error) {
+    res.status(400).json({
+      ok: false,
+      message: error,
+    });
+  }
 });
 
-router.put("/:id", (req, res) => {
-  const category = categories.find((element) => element.id == req.params.id);
+router.put("/:id", async (req, res) => {
+  const { id } = req.params;
+  const { name } = req.body;
 
-  if (!category) {
-    res.status(404).json({ message: "Category not found" });
-  } else {
-    res.json({ message: `Category "${category.name}" modified successfully` });
-  }
+  const fileContent = await fs.readFile("./categories.json");
+  const fileContentString = fileContent.toString();
+  const categories = JSON.parse(fileContentString);
+
+  const category = categories.find((item) => item.id == id);
+  const newCategories = categories.filter((item) => id != item.id);
+  category.name = name;
+
+  newCategories.push(category);
+
+  await fs.writeFile("./categories.json", JSON.stringify(newCategories));
+
+  res.json({ ok: true, payload: category });
 });
 
 router.delete("/:id", async (req, res) => {

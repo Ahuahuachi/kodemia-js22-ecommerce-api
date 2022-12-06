@@ -1,0 +1,22 @@
+[
+  {
+    "id": 37,
+    "name": "categoria 4",
+    "products": ["productId1", "productId2", "productId3"]
+  },
+  {
+    "id": 13,
+    "name": "otra categoria mas otra mas",
+    "products": ["productId1", "productId2", "productId3"]
+  },
+  {
+    "id": 36,
+    "name": "Electronicos",
+    "products": ["productId1", "productId2", "productId3"]
+  },
+  {
+    "id": 100,
+    "name": "categoria 5",
+    "products": ["productId1", "productId2", "productId3"]
+  }
+]
