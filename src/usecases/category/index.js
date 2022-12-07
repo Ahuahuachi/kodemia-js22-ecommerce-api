@@ -11,20 +11,28 @@ const create = async (name) => {
   return await category.save();
 };
 
+const update = async (id, data) => {
+  const category = await Category.findById(id).exec();
+  const { name, products } = data;
+
+  category.name = name;
+  category.products = products;
+
+  return await category.save();
+};
+
 const addProducts = async (id, products) => {};
 
 const removeProducts = async (id, products) => {};
 
 const del = async (id) => {};
 
-const rename = async (id) => {};
-
 module.exports = {
   create,
   addProducts,
   removeProducts,
   del,
-  rename,
+  update,
   getById,
   getAll,
 };

@@ -52,21 +52,15 @@ router.post("/", async (req, res) => {
 
 router.put("/:id", async (req, res) => {
   const { id } = req.params;
-  const { name } = req.body;
+  const { name, products } = req.body;
 
-  const fileContent = await fs.readFile("./categories.json");
-  const fileContentString = fileContent.toString();
-  const categories = JSON.parse(fileContentString);
-
-  const category = categories.find((item) => item.id == id);
-  const newCategories = categories.filter((item) => id != item.id);
-  category.name = name;
-
-  newCategories.push(category);
-
-  await fs.writeFile("./categories.json", JSON.stringify(newCategories));
-
-  res.json({ ok: true, payload: category });
+  try {
+    const data = { name, products };
+    const category = await categoryUseCases.update(id, data);
+    res.json({ ok: true, payload: category });
+  } catch (error) {
+    res.status(400).json({ ok: false, message: error });
+  }
 });
 
 router.delete("/:id", async (req, res) => {
