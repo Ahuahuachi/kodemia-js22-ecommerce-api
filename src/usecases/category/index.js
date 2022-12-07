@@ -13,12 +13,14 @@ const create = async (name) => {
 
 const update = async (id, data) => {
   const { name, products } = data;
-  const data = {};
 
-  data.name = name ? name : data.name;
-  data.products = products ? products : data.products;
+  if (!name || !products) {
+    const category = await Category.findById(id).exec();
+    name = name ? name : category.name;
+    products = products ? products : category.products;
+  }
 
-  return await Category.findByIdAndUpdate(id, data).exec();
+  return await Category.findByIdAndUpdate(id, { name, products }).exec();
 };
 
 const del = async (id) => await Category.findByIdAndDelete(id).exec();
