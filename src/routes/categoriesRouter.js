@@ -59,22 +59,21 @@ router.put("/:id", async (req, res) => {
     const category = await categoryUseCases.update(id, data);
     res.json({ ok: true, payload: category });
   } catch (error) {
-    res.status(400).json({ ok: false, message: error });
+    const { message } = error;
+    res.status(400).json({ ok: false, message });
   }
 });
 
 router.delete("/:id", async (req, res) => {
-  const { id } = req.params;
-  const fileContent = await fs.readFile("./categories.json");
-  const categories = JSON.parse(fileContent.toString());
+  try {
+    const { id } = req.params;
+    const { name, products } = await categoryUseCases.del(id);
 
-  // const category = categories.find((element) => element.id == id);
-
-  const newCategories = categories.filter((element) => element.id != id);
-
-  fs.writeFile("./categories.json", JSON.stringify(newCategories));
-
-  res.json({ message: `Category "${id}" deleted successfully` });
+    res.json({ ok: true, payload: { name, products } });
+  } catch (error) {
+    const { message } = error;
+    res.status(400).json({ ok: false, message });
+  }
 });
 
 module.exports = router;

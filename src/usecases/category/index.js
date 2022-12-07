@@ -12,25 +12,19 @@ const create = async (name) => {
 };
 
 const update = async (id, data) => {
-  const category = await Category.findById(id).exec();
   const { name, products } = data;
+  const data = {};
 
-  category.name = name;
-  category.products = products;
+  data.name = name ? name : data.name;
+  data.products = products ? products : data.products;
 
-  return await category.save();
+  return await Category.findByIdAndUpdate(id, data).exec();
 };
 
-const addProducts = async (id, products) => {};
-
-const removeProducts = async (id, products) => {};
-
-const del = async (id) => {};
+const del = async (id) => await Category.findByIdAndDelete(id).exec();
 
 module.exports = {
   create,
-  addProducts,
-  removeProducts,
   del,
   update,
   getById,
