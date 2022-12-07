@@ -1,17 +1,15 @@
-const fs = require("fs/promises");
 const router = require("express").Router();
-const categoryUseCases = require("../usecases/category");
-
-const categories = [
-  { id: 1, name: "Hombre" },
-  { id: 2, name: "Mujer" },
-  { id: 3, name: "Niños/Niñas" },
-  { id: 4, name: "Mascotas" },
-];
+const {
+  getAll,
+  getById,
+  create,
+  update,
+  del,
+} = require("../usecases/category");
 
 router.get("/", async (req, res) => {
   try {
-    const categories = await categoryUseCases.getAll();
+    const categories = await getAll();
     res.json({ ok: true, payload: categories });
   } catch (error) {
     res.status(400).json({ ok: false, message: error });
@@ -22,7 +20,7 @@ router.get("/:id", async (req, res) => {
   const { id } = req.params;
 
   try {
-    const { name, products } = await categoryUseCases.getById(id);
+    const { name, products } = await getById(id);
     res.json({
       ok: true,
       payload: { name, products, numberOfProducts: products.length },
@@ -36,7 +34,7 @@ router.post("/", async (req, res) => {
   const { name } = req.body;
 
   try {
-    const payload = await categoryUseCases.create(name);
+    const payload = await create(name);
     res.json({
       ok: true,
       message: "Category created successfully",
@@ -56,7 +54,7 @@ router.put("/:id", async (req, res) => {
 
   try {
     const data = { name, products };
-    const category = await categoryUseCases.update(id, data);
+    const category = await update(id, data);
     res.json({ ok: true, payload: category });
   } catch (error) {
     const { message } = error;
@@ -67,7 +65,7 @@ router.put("/:id", async (req, res) => {
 router.delete("/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, products } = await categoryUseCases.del(id);
+    const { name, products } = await del(id);
 
     res.json({ ok: true, payload: { name, products } });
   } catch (error) {
