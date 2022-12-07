@@ -6,7 +6,7 @@ const connect = () => {
     const { user, password, host } = config.db;
 
     mongoose.connect(
-      `mongodb+srv://${user}:${password}@${host}/?retryWrites=true&w=majority`
+      `mongodb+srv://${user}:${password}@${host}/ecommerce?retryWrites=true&w=majority`
     );
 
     const db = mongoose.connection;

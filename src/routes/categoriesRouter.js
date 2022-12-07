@@ -10,18 +10,25 @@ const categories = [
 ];
 
 router.get("/", async (req, res) => {
-  const categories = await fs.readFile("./categories.json");
-  const data = JSON.parse(categories.toString());
-  res.json(data);
+  try {
+    const categories = await categoryUseCases.getAll();
+    res.json({ ok: true, payload: categories });
+  } catch (error) {
+    res.status(400).json({ ok: false, message: error });
+  }
 });
 
-router.get("/:id", (req, res) => {
-  const category = categories.find((element) => element.id == req.params.id);
+router.get("/:id", async (req, res) => {
+  const { id } = req.params;
 
-  if (!category) {
-    res.status(404).json({ message: "Category not found" });
-  } else {
-    res.json(category);
+  try {
+    const { name, products } = await categoryUseCases.getById(id);
+    res.json({
+      ok: true,
+      payload: { name, products, numberOfProducts: products.length },
+    });
+  } catch (error) {
+    res.status(400).json({ ok: false, message: error });
   }
 });
 

@@ -1,5 +1,11 @@
 const Category = require("../../models/category").model;
 
+const getAll = async () => {
+  return await Category.find({}).exec();
+};
+
+const getById = async (id) => await Category.findById(id).exec();
+
 const create = async (name) => {
   const category = new Category({ name });
   return await category.save();
@@ -13,16 +19,12 @@ const del = async (id) => {};
 
 const rename = async (id) => {};
 
-const getOne = async (id) => {};
-
-const getAll = async () => {};
-
 module.exports = {
   create,
   addProducts,
   removeProducts,
   del,
   rename,
-  getOne,
+  getById,
   getAll,
 };
