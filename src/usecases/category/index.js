@@ -14,12 +14,6 @@ const create = async (name) => {
 const update = async (id, data) => {
   const { name, products } = data;
 
-  if (!name || !products) {
-    const category = await Category.findById(id).exec();
-    name = name ? name : category.name;
-    products = products ? products : category.products;
-  }
-
   return await Category.findByIdAndUpdate(id, { name, products }).exec();
 };
 
