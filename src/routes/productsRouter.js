@@ -1,6 +1,7 @@
 const { Router } = require("express");
 const routes = Router();
 const { getAll, create, getById, update } = require("../usecases/product");
+const { authHandler } = require("../middlewares/authHandler");
 
 routes.get("/", async (req, res) => {
   try {

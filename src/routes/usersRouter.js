@@ -1,5 +1,7 @@
 const { Router } = require("express");
 const routes = Router();
+const { getAll, create, authenticate, getById } = require("../usecases/user");
+const { authHandler } = require("../middlewares/authHandler");
 
 const users = [
   { id: 1, username: "admin", firstName: "Admin", lastName: "System" },
@@ -7,10 +9,12 @@ const users = [
   { id: 3, username: "customer", firstName: "John", lastName: "Doe" },
 ];
 
-routes.get("/", (req, res) => {
-  throw new Error("Some random error ocurred");
+routes.get("/", authHandler, async (req, res) => {
+  const id = req.params.token.sub;
 
-  res.json(users);
+  const { email, firstName } = await getById(id);
+
+  res.json({ ok: true, payload: { email, firstName } });
 });
 
 routes.get("/:userid", (req, res) => {
@@ -25,22 +29,22 @@ routes.get("/:userid", (req, res) => {
   }
 });
 
-routes.post("/", (req, res) => {
-  const data = req.body;
+routes.post("/", async (req, res) => {
+  const { email, password, firstName } = req.body;
 
-  // Lógica para crear un usuario con los datos obtenidos
+  const payload = await create({ email, password, firstName });
+  res.json({ ok: true, payload });
+});
 
-  const { username, email } = data;
-  const newUser = { username, email, id: 54 };
+routes.post("/auth", async (req, res) => {
+  const { email, password } = req.body;
 
-  if (!data) {
-    res.status(400).json({ message: "User data is required" });
-  } else {
-    res.status(201).json({
-      ok: true,
-      message: "Usuario creado",
-      payload: newUser,
-    });
+  try {
+    const payload = await authenticate(email, password);
+    res.status(202).json({ ok: true, payload });
+  } catch (error) {
+    const { message } = error;
+    res.status(401).json({ ok: false, message });
   }
 });
 
