@@ -1,10 +1,12 @@
 const Category = require("../../models/category").model;
 
 const getAll = async () => {
-  return await Category.find({}).exec();
+  return await Category.find({}).populate("products").exec();
 };
 
-const getById = async (id) => await Category.findById(id).exec();
+const getById = async (id) => {
+  return await Category.findById(id).populate("products").exec();
+};
 
 const create = async (name) => {
   const category = new Category({ name });
