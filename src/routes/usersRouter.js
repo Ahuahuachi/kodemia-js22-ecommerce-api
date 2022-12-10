@@ -1,13 +1,8 @@
 const { Router } = require("express");
-const routes = Router();
 const { getAll, create, authenticate, getById } = require("../usecases/user");
 const { authHandler } = require("../middlewares/authHandler");
 
-const users = [
-  { id: 1, username: "admin", firstName: "Admin", lastName: "System" },
-  { id: 2, username: "staff", firstName: "Staff", lastName: "" },
-  { id: 3, username: "customer", firstName: "John", lastName: "Doe" },
-];
+const routes = Router();
 
 routes.get("/", authHandler, async (req, res) => {
   const id = req.params.token.sub;
@@ -17,23 +12,16 @@ routes.get("/", authHandler, async (req, res) => {
   res.json({ ok: true, payload: { email, firstName } });
 });
 
-routes.get("/:userid", (req, res) => {
-  const data = users.find((user) => {
-    return user.id == req.params.userid;
-  });
-
-  if (data) {
-    res.json(data);
-  } else {
-    res.status(404).json({ message: "User not found" });
-  }
-});
-
 routes.post("/", async (req, res) => {
   const { email, password, firstName } = req.body;
 
-  const payload = await create({ email, password, firstName });
-  res.json({ ok: true, payload });
+  try {
+    const payload = await create({ email, password, firstName });
+    res.json({ ok: true, payload });
+  } catch (error) {
+    const { message } = error;
+    res.status(400).json({ ok: false, message });
+  }
 });
 
 routes.post("/auth", async (req, res) => {
